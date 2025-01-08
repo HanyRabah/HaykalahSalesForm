@@ -1,0 +1,27 @@
+{
+  "common":{
+    "fullName": "Full Name",
+    "email": "Email Address",
+    "phoneNumber": "Phone Number",
+    "companyName": "Company Name",
+    "address": "Address",
+    "industrialSector": "Industrial Sector",
+    "selectIndustrialSector": "Select or type to search",
+    "industrialCity": "Idustrial City",
+    "selectIndustrialCity": "Select Idusttry",
+    "services": "Services",
+    "selectServices": "Select Services",
+    "comments": "Comments",
+    "submit": "Submit",
+    "next": "Next",
+    "back": "Back",
+    "personalInfo" : "Personal Info",
+    "companyInfo" : "Company Info",
+    "servicesInfo" : "Services Info",
+    "additionalInfo" : "Additional Info",
+    "submitSuccess": "Request Submitted Successfully",
+    "submitError": "An error occurred while submitting the request",
+    "startAgain": "Start Again",
+    "allRightsReserved": "Next Digital. All rights reserved."
+  }
+  }

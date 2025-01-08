@@ -1,0 +1,27 @@
+{
+  "common":{
+    "fullName": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "phoneNumber": "رقم الهاتف",
+    "companyName": "اسم الشركة",
+    "address": "العنوان",
+    "industrialSector": "القطاع الصناعي",
+    "selectIndustrialSector": "اختر القطاع الصناعي",
+    "industrialCity": "المدينة الصناعية",
+    "selectIndustrialCity": "اختر صناعة الشركة",
+    "services": "الخدمات",
+    "selectServices": "اختر الخدمات",
+    "comments": "تعليقات",
+    "submit": "إرسال",
+    "next": "التالي",
+    "back": "السابق",
+    "personalInfo" : "معلومات شخصية",
+    "companyInfo" : "معلومات الشركة",
+    "servicesInfo" : "معلومات الخدمات",
+    "additionalInfo" : "معلومات إضافية",
+    "submitSuccess": "تم إرسال الطلب بنجاح",
+    "submitError": "حدث خطأ أثناء إرسال الطلب",
+    "startAgain": "ابدأ من جديد",
+    "allRightsReserved": "جميع الحقوق محفوظة"
+  }
+}
