@@ -1,13 +1,13 @@
 'use client'; // Mark as a Client Component
 
-import { useState } from 'react';
-import { Button, TextField, Box, Stepper, Step, StepLabel, IconButton, Typography } from '@mui/material';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useLocale, useTranslations } from 'next-intl';
-import { IndustrialSectorDropdown } from './IndustrialSectorDropdown';
-import { ServicesDropdown } from './ServicesDropdown';
-import { IndustrialCityDropdown } from './industrialCityDropdown';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { Box, Button, IconButton, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useLocale, useTranslations } from 'next-intl';
+import { useState } from 'react';
+import { IndustrialSectorDropdown } from './IndustrialSectorDropdown';
+import ServicesDropdown from './ServicesDropdown';
+import { IndustrialCityDropdown } from './industrialCityDropdown';
 
 // Define the form data interface
 interface FormData {

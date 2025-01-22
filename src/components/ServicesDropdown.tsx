@@ -1,6 +1,6 @@
 import { useServices } from '@/hooks/useServices';
+import { Box, Checkbox, FormControlLabel, Grid, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { Box, Typography, Checkbox, FormControlLabel, Grid } from '@mui/material';
 
 type Service = {
   en: {
@@ -14,22 +14,21 @@ type Service = {
 };
 
 interface ServicesDropdownProps {
-  value: string[]; // Array of selected service names
-  onChange: (value: string[]) => void; // Callback to update selected services
+  value: string[];
+  onChange: (value: string[]) => void;
   locale?: string;
 }
 
-export function ServicesDropdown({ value, onChange, locale = 'en' }: ServicesDropdownProps) {
+function ServicesDropdown({ value, onChange, locale = 'en' }: ServicesDropdownProps) {
   const t = useTranslations('common');
   const { services, loading, error } = useServices();
 
-  // Handle service selection
   const handleServiceChange = (serviceName: string) => {
     const updatedValues = value.includes(serviceName)
-      ? value.filter((val) => val !== serviceName) // Deselect
-      : [...value, serviceName]; // Select
+      ? value.filter((val) => val !== serviceName)
+      : [...value, serviceName];
 
-    onChange(updatedValues); // Update the parent component
+    onChange(updatedValues);
   };
 
   return (
@@ -51,7 +50,10 @@ export function ServicesDropdown({ value, onChange, locale = 'en' }: ServicesDro
                   border: '1px solid #ccc',
                   borderRadius: '8px',
                   padding: '16px',
-                  textAlign: 'center',
+                  height: '100%', // Make box take full height of grid item
+                  display: 'flex',
+                  flexDirection: 'column',
+                  textAlign: 'left', // Align text to left as per screenshot
                   cursor: 'pointer',
                   backgroundColor: value.includes(localizedService.name) ? '#e0f7fa' : '#fff',
                   color: value.includes(localizedService.name) ? '#00acc1' : 'inherit',
@@ -61,10 +63,10 @@ export function ServicesDropdown({ value, onChange, locale = 'en' }: ServicesDro
                 }}
                 onClick={() => handleServiceChange(localizedService.name)}
               >
-                <Typography variant="subtitle1" fontWeight="bold">
+                <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
                   {localizedService.name}
                 </Typography>
-                <Typography variant="body2" >
+                <Typography variant="body2" sx={{ flexGrow: 1 }}>
                   {localizedService.description}
                 </Typography>
                 <FormControlLabel
@@ -73,11 +75,11 @@ export function ServicesDropdown({ value, onChange, locale = 'en' }: ServicesDro
                       checked={value.includes(localizedService.name)}
                       onChange={() => handleServiceChange(localizedService.name)}
                       color="primary"
-                      sx={{ display: 'none' }} 
+                       sx={{ display: 'none' }} 
                     />
                   }
                   label=""
-                  sx={{ mt: 1 }}
+                  sx={{ mt: 1, justifyContent: 'center' }}
                 />
               </Box>
             </Grid>
@@ -87,3 +89,5 @@ export function ServicesDropdown({ value, onChange, locale = 'en' }: ServicesDro
     </Box>
   );
 }
+
+export default ServicesDropdown;
