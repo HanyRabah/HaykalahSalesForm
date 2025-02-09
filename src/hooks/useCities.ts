@@ -1,5 +1,5 @@
 import { ApiService } from '@/services/api';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Location {
   en: string;
@@ -20,7 +20,6 @@ export function useCities() {
             '/api/cities?type=cities',
             'cities'
           );
-          console.log("🚀 ~ fetchData ~ response:", response)
 
           setCities(response.cities);
           setError(null);

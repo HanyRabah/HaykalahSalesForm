@@ -1,5 +1,7 @@
 {
   "common":{
+    "tagLine": "مُصمم لإحداث تأثير في السوق",
+    "formTitle": "طلب خدماتنا",
     "fullName": "الاسم الكامل",
     "email": "البريد الإلكتروني",
     "phoneNumber": "رقم الهاتف",
@@ -11,7 +13,7 @@
     "selectIndustrialCity": "اختر صناعة الشركة",
     "services": "الخدمات",
     "selectServices": "اختر الخدمات",
-    "comments": "تعليقات",
+    "comments": "بيانات إضافية",
     "submit": "إرسال",
     "next": "التالي",
     "back": "السابق",

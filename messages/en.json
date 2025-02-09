@@ -1,5 +1,7 @@
 {
   "common":{
+    "tagLine": "Structured for Market Impact!",
+    "formTitle": "Request Our Services",
     "fullName": "Full Name",
     "email": "Email Address",
     "phoneNumber": "Phone Number",
@@ -11,7 +13,7 @@
     "selectIndustrialCity": "Select Idusttry",
     "services": "Services",
     "selectServices": "Select Services",
-    "comments": "Comments",
+    "comments": "More Info",
     "submit": "Submit",
     "next": "Next",
     "back": "Back",

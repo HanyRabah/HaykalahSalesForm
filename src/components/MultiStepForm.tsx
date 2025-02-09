@@ -1,63 +1,52 @@
-'use client'; // Mark as a Client Component
+'use client';
 
+import { useSectors } from '@/hooks/useSectors';
+import { useServices } from '@/hooks/useServices';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { Box, Button, IconButton, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
-import { AnimatePresence, motion } from 'framer-motion';
+import { Box, Button, CircularProgress, Container, Grid, IconButton, Paper, TextField, Typography } from '@mui/material';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { IndustrialSectorDropdown } from './IndustrialSectorDropdown';
 import ServicesDropdown from './ServicesDropdown';
-import { IndustrialCityDropdown } from './industrialCityDropdown';
 
-// Define the form data interface
 interface FormData {
   fullName: string;
   email: string;
   phoneNumber: string;
   companyName: string;
   address: string;
-  locationUrl: string; // New field for Google Maps URL
+  locationUrl: string;
   industrialSector: string;
   industrialCity: string;
   services: string[];
   comments: string;
 }
 
-// Define steps for the form
-const steps = ['personalInfo', 'companyInfo', 'additionalInfo'];
-
-export default function MultiStepForm() {
+export default function SinglePageForm() {
   const t = useTranslations('common');
-  const locale = useLocale();  
-  const [activeStep, setActiveStep] = useState(0);
+  const locale = useLocale();
+  const { loading: sectorsLoading } = useSectors();
+  const { loading: servicesLoading } = useServices();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
     email: '',
     phoneNumber: '',
     companyName: '',
     address: '',
-    locationUrl: '', // Initialize location URL
+    locationUrl: '',
     industrialSector: '',
-    industrialCity: '',
+    industrialCity: 'Jeddah 3rd Industrial City',
     services: [],
     comments: '',
   });
-  const [isSubmitted, setIsSubmitted] = useState(false); // Track form submission
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name]: value,
-    });
-  };
-
-  const handleNext = () => {
-    setActiveStep((prevStep) => prevStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevStep) => prevStep - 1);
+    }));
   };
 
   const detectLocation = () => {
@@ -66,7 +55,7 @@ export default function MultiStepForm() {
         (position) => {
           const { latitude, longitude } = position.coords;
           const locationUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
-          setFormData({ ...formData, locationUrl });
+          setFormData(prev => ({ ...prev, locationUrl }));
         },
         (error) => {
           console.error('Error detecting location:', error);
@@ -77,7 +66,10 @@ export default function MultiStepForm() {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
     try {
       const response = await fetch('/api/submit-form?type=submit', {
         method: 'POST',
@@ -87,116 +79,148 @@ export default function MultiStepForm() {
         body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
-        setIsSubmitted(true); // Show success message
-      } else {
-        alert(t('submitFailed'));
+      if (!response.ok) {
+        throw new Error(t('submitFailed'));
       }
+
+      // Reset form on success
+      setFormData({
+        fullName: '',
+        email: '',
+        phoneNumber: '',
+        companyName: '',
+        address: '',
+        locationUrl: '',
+        industrialSector: '',
+        industrialCity: 'Jeddah 3rd Industrial City',
+        services: [],
+        comments: '',
+      });
+      
+      alert(t('submitSuccess'));
     } catch (error) {
       console.error('Error submitting form:', error);
       alert(t('submitError'));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const resetForm = () => {
-    setIsSubmitted(false); // Hide success message
-    setFormData({
-      fullName: '',
-      email: '',
-      phoneNumber: '',
-      companyName: '',
-      address: '',
-      locationUrl: '',
-      industrialSector: '',
-      industrialCity: '',
-      services: [],
-      comments: '',
-    });
-    setActiveStep(0); // Reset to the first step
-  };
+  if (sectorsLoading || servicesLoading) {
+    return (
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '400px'
+      }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
-  const getStepContent = (step: number) => {
-    switch (step) {
-      case 0:
-        return (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+  return (
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Paper
+        component="form"
+        onSubmit={handleSubmit}
+        elevation={3}
+        sx={{
+          p: 4,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 3
+        }}
+      >
+        <Typography variant="h4" sx={{ mb: 2 }}>
+          {t('formTitle')}
+        </Typography>
+
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
             <TextField
               label={t('fullName')}
               name="fullName"
               value={formData.fullName}
               onChange={handleChange}
-              fullWidth
               required
+              disabled={isSubmitting}
+              fullWidth
             />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
             <TextField
               label={t('email')}
               name="email"
               type="email"
               value={formData.email}
               onChange={handleChange}
-              fullWidth
               required
+              disabled={isSubmitting}
+              fullWidth
             />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
             <TextField
               label={t('phoneNumber')}
               name="phoneNumber"
               type="tel"
               value={formData.phoneNumber}
               onChange={handleChange}
-              fullWidth
               required
+              disabled={isSubmitting}
+              fullWidth
             />
-          </Box>
-        );
-      case 1:
-        return (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
             <TextField
               label={t('companyName')}
               name="companyName"
               value={formData.companyName}
               onChange={handleChange}
-              fullWidth
               required
+              disabled={isSubmitting}
+              fullWidth
             />
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Box sx={{ display: 'flex', gap: 1 }}>
               <TextField
                 label={t('address')}
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
-                fullWidth
                 required
+                disabled={isSubmitting}
+                fullWidth
               />
-              <IconButton onClick={detectLocation}>
+              <IconButton onClick={detectLocation} disabled={isSubmitting}>
                 <LocationOnIcon />
               </IconButton>
             </Box>
+          </Grid>
+
+          <Grid item xs={12}>
             <IndustrialSectorDropdown
               value={formData.industrialSector}
-              onChange={(value) =>
-                setFormData({ ...formData, industrialSector: value })
-              }
+              onChange={(value) => setFormData(prev => ({ ...prev, industrialSector: value }))}
               locale={locale}
             />
-            <IndustrialCityDropdown
-              value={formData.industrialCity}
-              onChange={(value) =>
-                setFormData({ ...formData, industrialCity: value })
-              }
-              locale={locale}
-            />
-          </Box>
-        );
-      case 2:
-        return (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          </Grid>
+
+          <Grid item xs={12}>
             <ServicesDropdown
               value={formData.services}
-              onChange={(value) =>
-                setFormData({ ...formData, services: value })
-              }
+              onChange={(value) => setFormData(prev => ({ ...prev, services: value }))}
+              locale={locale}
             />
+          </Grid>
+
+          <Grid item xs={12}>
             <TextField
               label={t('comments')}
               name="comments"
@@ -204,62 +228,27 @@ export default function MultiStepForm() {
               onChange={handleChange}
               multiline
               rows={4}
+              disabled={isSubmitting}
               fullWidth
             />
-          </Box>
-        );
-      default:
-        return 'Unknown step';
-    }
-  };
+          </Grid>
+        </Grid>
 
-  return (
-    <Box sx={{ maxWidth: 600, mx: 'auto', mt: 4, p: 3, boxShadow: 3, borderRadius: 2 }}>
-      {isSubmitted ? (
-        <Box sx={{ textAlign: 'center' }}>
-          <Typography variant="h5" sx={{ mb: 2 }}>
-            {t('submitSuccess')}
-          </Typography>
-          <Button variant="contained" onClick={resetForm}>
-            {t('startAgain')}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isSubmitting}
+            sx={{ minWidth: 150 }}
+          >
+            {isSubmitting ? (
+              <CircularProgress size={24} sx={{ color: 'common.white' }} />
+            ) : (
+              t('submit')
+            )}
           </Button>
         </Box>
-      ) : (
-        <>
-          <Stepper activeStep={activeStep} alternativeLabel>
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel>{t(label)}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeStep}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Box sx={{ mt: 4 }}>{getStepContent(activeStep)}</Box>
-            </motion.div>
-          </AnimatePresence>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-            <Button disabled={activeStep === 0} onClick={handleBack}>
-              {t('back')}
-            </Button>
-            {activeStep === steps.length - 1 ? (
-              <Button variant="contained" onClick={handleSubmit}>
-                {t('submit')}
-              </Button>
-            ) : (
-              <Button variant="contained" onClick={handleNext}>
-                {t('next')}
-              </Button>
-            )}
-          </Box>
-        </>
-      )}
-    </Box>
+      </Paper>
+    </Container>
   );
 }

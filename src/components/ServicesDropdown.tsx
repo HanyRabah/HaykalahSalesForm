@@ -43,6 +43,7 @@ function ServicesDropdown({ value, onChange, locale = 'en' }: ServicesDropdownPr
       <Grid container spacing={2}>
         {services.map((service: Service) => {
           const localizedService = service[locale as 'en' | 'ar'];
+          
           return (
             <Grid item xs={12} sm={6} md={4} key={localizedService.name}>
               <Box
